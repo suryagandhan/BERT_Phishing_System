@@ -1,0 +1,36 @@
+# BERT-based Phishing Detection System Requirements
+
+# Core ML/AI libraries
+torch>=2.0.0
+transformers>=4.30.0
+datasets>=2.12.0
+scikit-learn>=1.3.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Web framework
+flask>=2.3.0
+flask-cors>=4.0.0
+
+# TensorFlow compatibility (for transformers)
+tf-keras>=2.13.0
+
+# Data processing
+tqdm>=4.65.0
+requests>=2.31.0
+
+# Optional: for GPU acceleration
+# torch-audio  # Uncomment if using audio features
+# accelerate>=0.20.0  # For distributed training
+
+# Development and testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Production deployment
+gunicorn>=21.2.0
+python-dotenv>=1.0.0
+
+# Data visualization (optional)
+matplotlib>=3.7.0
+seaborn>=0.12.0
