@@ -1,4 +1,4 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
+
 
 ## Starting From Scratch — Complete Workflow When No Pre-Trained Model Is Provided
 
@@ -62,11 +62,6 @@ Email body: Dear user, …,1
 
 ```bash
 python train_model.py \
-    --train data/train.csv \
-    --valid data/valid.csv \
-    --epochs 3 \
-    --batch-size 32 \
-    --model-out models/phishing-bert.pt
 ```
 
 What happens:
