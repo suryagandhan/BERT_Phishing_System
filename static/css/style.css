@@ -1,0 +1,35 @@
+/* ---------- Theme -------------------------------------------------------- */
+:root{
+  --bs-primary: #2563eb;
+  --bs-success: #059669;
+  --bs-danger:  #dc2626;
+}
+
+/* Dark-mode body background */
+html[data-bs-theme='dark'] body{ background:#0d1117; }
+html[data-bs-theme='light'] body{ background:#f8fafc; }
+
+/* Glassmorphism card */
+.glass{
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
+}
+
+/* Soft-UI button */
+.neu{
+  border-radius:12px;
+  box-shadow:8px 8px 16px rgba(0,0,0,.05),
+             -8px -8px 16px rgba(255,255,255,.8);
+  transition:.2s;
+}
+.neu:active{
+  box-shadow:inset 4px 4px 8px rgba(0,0,0,.08),
+             inset -4px -4px 8px rgba(255,255,255,.6);
+}
+
+/* Fade-up animation */
+.fade-up{opacity:0;transform:translateY(40px);transition:.6s ease;}
+.fade-up.show{opacity:1;transform:none;}
