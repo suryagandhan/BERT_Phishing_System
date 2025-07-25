@@ -1,0 +1,258 @@
+{% extends "index.html" %}
+
+{% block body %}
+  {{ super() }}
+
+  <div class="container my-4 fade-up">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+
+        <!-- Analysis Results Header -->
+        <div class="d-flex align-items-center mb-4">
+          <i class="fas fa-chart-line me-2 text-primary"></i>
+          <h3 class="mb-0">⚠ Analysis Results</h3>
+        </div>
+
+        <!-- Main Results Card -->
+        <div class="card glass border-0 mb-4">
+          <div class="card-body p-4">
+            
+            <!-- Phishing Alert Header -->
+            <div class="alert {{ 'alert-danger' if result['prediction'] else 'alert-success' }} mb-4">
+              <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                  {{ 'PHISHING' if result['prediction'] else 'LEGITIMATE' }}
+                </h4>
+                <small class="text-muted">
+                  Analysis completed at {{ result['timestamp'] }}
+                </small>
+              </div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="row text-center mb-4">
+              <!-- Probability -->
+              <div class="col-md-3">
+                <div class="stat-card">
+                  <div class="stat-value">{{ '{:.1f}'.format(result['probability'] * 100) }}%</div>
+                  <div class="stat-label text-{{ 'danger' if result['prediction'] else 'success' }}">PROBABILITY</div>
+                </div>
+              </div>
+
+              <!-- Confidence -->
+              <div class="col-md-3">
+                <div class="stat-card">
+                  <div class="stat-value">{{ '{:.1f}'.format(result['confidence'] * 100) }}%</div>
+                  <div class="stat-label text-primary">CONFIDENCE</div>
+                </div>
+              </div>
+
+              <!-- Risk Level -->
+              <div class="col-md-3">
+                <div class="stat-card">
+                  <div class="stat-value text-{{ 'danger' if result['risk_level'] == 'HIGH' else ('warning' if result['risk_level'] == 'MEDIUM' else 'success') }}">
+                    {{ result['risk_level'] }}
+                  </div>
+                  <div class="stat-label text-muted">RISK LEVEL</div>
+                </div>
+              </div>
+
+              <!-- Analysis Type -->
+              <div class="col-md-3">
+                <div class="stat-card">
+                  <div class="stat-value text-secondary">{{ result['analysis_type'].upper() }}</div>
+                  <div class="stat-label text-muted">ANALYSIS TYPE</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ---------- Progress Bar (fixed) ----------  -->
+{% set phish_pct  = (result['probability'] * 100) | round(1) %}
+{% set legit_pct  = (100 - phish_pct) | round(1) %}
+
+<div class="mb-4">
+
+  <!-- Labels -->
+  <div class="d-flex justify-content-between mb-1">
+    <small class="text-danger fw-bold">Phishing&nbsp;{{ phish_pct }} %</small>
+    <small class="text-success fw-bold">Legitimate&nbsp;{{ legit_pct }} %</small>
+  </div>
+
+  <!-- Dual-colour progress bar -->
+  <div class="progress" style="height:14px; border-radius:10px; overflow:hidden;">
+    <div class="progress-bar bg-danger"
+         role="progressbar"
+         style="width: {{ phish_pct if phish_pct > 0.5 else 0.5 }}%;"
+         aria-valuenow="{{ phish_pct }}" aria-valuemin="0" aria-valuemax="100">
+    </div>
+    <div class="progress-bar bg-success"
+         role="progressbar"
+         style="width: {{ legit_pct if legit_pct > 0.5 else 0.5 }}%;">
+    </div>
+  </div>
+
+  <!-- Axis -->
+  <div class="d-flex justify-content-between mt-1">
+    <small class="text-muted">0 % (safe)</small>
+    <small class="text-muted">100 % (danger)</small>
+  </div>
+</div>
+
+
+            <!-- Recommendation Section -->
+            <div class="recommendation-section">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fas fa-lightbulb me-2 text-warning"></i>
+                <h6 class="mb-0">💡 Recommendation</h6>
+              </div>
+              <div class="alert alert-info">
+                <strong>{{ 'REVIEW' if result['prediction'] else 'ALLOW' }}</strong> - {{ result['recommendation'] }}
+              </div>
+            </div>
+
+            <!-- Additional Details Accordion -->
+            <div class="accordion mt-4" id="detailsAccordion">
+              <!-- URL Features -->
+              {% if result.get('url_features') %}
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#urlFeatures">
+                    URL Features Analysis
+                  </button>
+                </h2>
+                <div id="urlFeatures" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="row">
+                      {% for feature, value in result['url_features'].items() %}
+                      <div class="col-md-6 mb-2">
+                        <small class="text-muted">{{ feature.replace('_', ' ').title() }}:</small>
+                        <span class="ms-2">
+                          {% if value is sameas true %}
+                            <span class="badge bg-success">Yes</span>
+                          {% elif value is sameas false %}
+                            <span class="badge bg-secondary">No</span>
+                          {% else %}
+                            <span class="badge bg-info">{{ value }}</span>
+                          {% endif %}
+                        </span>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- Model Breakdown -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#modelBreakdown">
+                    Model Breakdown
+                  </button>
+                </h2>
+                <div id="modelBreakdown" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    {% if result.get('individual_models') %}
+                      <ul class="list-group list-group-flush">
+                        {% for model_name, stats in result['individual_models'].items() %}
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="text-capitalize">{{ model_name }}</span>
+                            <div>
+                              <span class="badge {{ 'bg-danger' if stats['prediction'] else 'bg-success' }} me-2">
+                                {{ 'P' if stats['prediction'] else 'L' }}
+                              </span>
+                              <span>{{ '{:.1f}'.format(stats['probability'] * 100) }}%</span>
+                            </div>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <p class="text-muted">No per-model details available.</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Processing Details -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#processingDetails">
+                    Processing Details
+                  </button>
+                </h2>
+                <div id="processingDetails" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <small class="text-muted">Text Analyzed:</small>
+                        <p class="small">{{ result['text'] }}</p>
+                      </div>
+                      <div class="col-md-6">
+                        <small class="text-muted">Processing Time:</small>
+                        <p class="small">{{ result.get('elapsed', result.get('processing_time', 0)) }} seconds</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center">
+          <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg me-3">
+            <i class="fas fa-arrow-left me-2"></i>Analyse Another
+          </a>
+          <button class="btn btn-outline-primary btn-lg" onclick="window.print()">
+            <i class="fas fa-print me-2"></i>Print Results
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom CSS for Dashboard Style -->
+  <style>
+    .stat-card {
+      padding: 1rem;
+      margin: 0.5rem 0;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .recommendation-section {
+      border-left: 4px solid #ffc107;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .alert-info {
+      background-color: rgba(13, 202, 240, 0.1);
+      border-color: rgba(13, 202, 240, 0.2);
+      color: #055160;
+    }
+    
+    .progress {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .accordion-button:not(.collapsed) {
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+  </style>
+{% endblock %}
