@@ -4,7 +4,7 @@
 
 Follow this checklist in order. When you finish every step, you will have (1) a fine-uned BERT phishing model saved in `models/`, (2) the Flask web app running locally, and (3) a working REST/JSON API.
 
-### 1  Clone the Source Code
+### 1.  Clone the Source Code
 
 ```bash
 git clone https://github.com/suryagandhan/BERT_Phishing_System.git
@@ -12,7 +12,7 @@ cd BERT_Phishing_System
 ```
 
 
-### 2  Create and Activate a Virtual Environment
+### 2.  Create and Activate a Virtual Environment
 
 ```bash
 python -m venv .venv
@@ -23,7 +23,7 @@ source .venv/bin/activate
 ```
 
 
-### 3  Install Core Dependencies
+### 3.  Install Core Dependencies
 
 ```bash
 pip install --upgrade pip wheel
@@ -38,7 +38,7 @@ pip install -r requirements.txt
 - Pandas / scikit-learn (data wrangling \& metrics)
 
 
-### 4  Prepare a Training Dataset
+### 4.  Prepare a Training Dataset
 
 1. Create a folder `data/`.
 2. Place two CSV files inside:
@@ -58,10 +58,10 @@ Email body: Dear user, …,1
 
 *Label 0 = legitimate — Label 1 = phishing.*
 
-### 5  Run the Training Script
+### 5.  Run the Training Script
 
 ```bash
-python train_model.py \
+python train_model.py 
 ```
 
 What happens:
@@ -78,17 +78,7 @@ models/
 ```
 
 
-### 6  Point the Inference Code to Your New Weights
-
-Open `predict.py` and set:
-
-```python
-MODEL_PATH = "models/phishing-bert.pt"      # or export MODEL_PATH env-var
-```
-
-No other change required.
-
-### 7  Launch the Flask Dev Server
+### 6.  Launch the Flask Dev Server
 
 ```bash
 python app.py
@@ -97,24 +87,17 @@ python app.py
 
 Paste any URL or e-mail text—your freshly-trained model now powers the prediction.
 
-### 8  (Optional) Docker Build Once Model Exists
-
-1. Keep the `models/` folder locally (do **not** push big files to Git).
-2. Build container that copies weights:
-```bash
-docker build -t phishing-detector .
-docker run -p 8000:5000 phishing-detector
-```
 
 
-### 9  Version Control Best Practice
+
+### 7.  Version Control Best Practice
 
 1. Add large checkpoints to `.gitignore`.
 2. If you want to share the model:
     * push to Hugging Face Hub **or**
     * store in an S3 bucket and write `scripts/download_model.sh`.
 
-### 10  Speed Tips for Future Retraining
+### 8.  Speed Tips for Future Retraining
 
 | Need | Flag / Setting |
 | :-- | :-- |
@@ -126,4 +109,6 @@ docker run -p 8000:5000 phishing-detector
 ### One-Line Summary
 
 **Clone → create venv → install deps → add CSV → `train_model.py` → update `MODEL_PATH` → `python app.py`.**
+
+
 
