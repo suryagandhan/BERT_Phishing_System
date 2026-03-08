@@ -35,26 +35,9 @@ This project demonstrates how **deep learning can be applied to cybersecurity** 
 
 # 🏗️ System Architecture
 
-```
-User Input (URL / Email)
-        │
-        ▼
-Text Preprocessing
-        │
-        ▼
-BERT Tokenizer
-        │
-        ▼
-BERT Model
-        │
-        ▼
-Classification Layer
-        │
-        ▼
-Prediction
-(Phishing / Legitimate)
-```
-
+<p align="center">
+  <img src="images/sytemArchitecture.png" width="300">
+</p>
 ---
 
 # 📂 Project Structure
@@ -241,12 +224,19 @@ Example evaluation metrics
 
 ### Web Interface
 
-Add screenshot here later
+<table align="center">
+<tr>
+<td align="center">
+<img src="images/webpage.jpg" width="450"><br>
+<b>Input Interface</b>
+</td>
 
-```
-![Demo](images/demo.png)
-```
-
+<td align="center">
+<img src="images/result.jpg" width="450"><br>
+<b>Prediction Result</b>
+</td>
+</tr>
+</table>
 ---
 
 # 🔒 Cybersecurity Applications
