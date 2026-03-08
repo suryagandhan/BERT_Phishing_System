@@ -1,114 +1,297 @@
+# 🛡️ BERT-Based Phishing Detection System
 
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Transformers](https://img.shields.io/badge/HuggingFace-Transformers-yellow)
+![PyTorch](https://img.shields.io/badge/PyTorch-DeepLearning-red)
+![Flask](https://img.shields.io/badge/Flask-WebApp-black)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## Starting From Scratch — Complete Workflow When No Pre-Trained Model Is Provided
+An **AI-powered phishing detection system** that uses **Natural Language Processing (NLP)** and **BERT (Bidirectional Encoder Representations from Transformers)** to detect phishing URLs, emails, and suspicious text in real time.
 
-Follow this checklist in order. When you finish every step, you will have (1) a fine-uned BERT phishing model saved in `models/`, (2) the Flask web app running locally, and (3) a working REST/JSON API.
+This project demonstrates how **deep learning can be applied to cybersecurity** to automatically identify phishing attacks.
 
-### 1.  Clone the Source Code
+---
 
-```bash
+# 🚀 Features
+
+✔ Detect phishing **URLs and email text**  
+✔ Powered by **BERT deep learning model**  
+✔ Real-time prediction using a **Flask web interface**  
+✔ REST API support for automation  
+✔ End-to-end pipeline: **data → training → prediction**
+
+---
+
+# 🧠 Technologies Used
+
+- Python  
+- BERT (Transformers)  
+- PyTorch  
+- Flask  
+- Pandas  
+- Scikit-learn  
+
+---
+
+# 🏗️ System Architecture
+
+```
+User Input (URL / Email)
+        │
+        ▼
+Text Preprocessing
+        │
+        ▼
+BERT Tokenizer
+        │
+        ▼
+BERT Model
+        │
+        ▼
+Classification Layer
+        │
+        ▼
+Prediction
+(Phishing / Legitimate)
+```
+
+---
+
+# 📂 Project Structure
+
+```
+BERT_Phishing_System
+│
+├── data/                # Training dataset
+├── models/              # Saved BERT model
+├── static/              # CSS / JS files
+├── templates/           # HTML frontend
+│
+├── app.py               # Flask web application
+├── predict.py           # Prediction script
+├── train_model.py       # Model training pipeline
+├── requirements.txt     # Project dependencies
+└── README.md
+```
+
+---
+
+# ⚙️ Installation
+
+## 1️⃣ Clone the Repository
+
+```
 git clone https://github.com/suryagandhan/BERT_Phishing_System.git
 cd BERT_Phishing_System
 ```
 
+---
 
-### 2.  Create and Activate a Virtual Environment
+## 2️⃣ Create a Virtual Environment
 
-```bash
+```
 python -m venv .venv
-# Mac / Linux
-source .venv/bin/activate
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
 ```
 
+Activate it
 
-### 3.  Install Core Dependencies
+Mac / Linux
 
-```bash
-pip install --upgrade pip wheel
+```
+source .venv/bin/activate
+```
+
+Windows
+
+```
+.venv\Scripts\activate
+```
+
+---
+
+## 3️⃣ Install Dependencies
+
+```
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-`requirements.txt` already contains:
+---
 
-- Flask (web server)
-- Transformers + Torch (BERT)
-- PyTorch Lightning (training loop)
-- Pandas / scikit-learn (data wrangling \& metrics)
+# 📊 Dataset Preparation
 
+Create a folder
 
-### 4.  Prepare a Training Dataset
+```
+data/
+```
 
-1. Create a folder `data/`.
-2. Place two CSV files inside:
-| File | Purpose | Minimum columns |
-| :-- | :-- | :-- |
-| `data/train.csv` | model learns here | `text`,`label` |
-| `data/valid.csv` | early-stopping \& calibration | `text`,`label` |
+Inside it place two CSV files
 
-Example row:
+| File | Purpose |
+|-----|-----|
+| train.csv | Model training |
+| valid.csv | Model validation |
 
-```csv
+Example dataset format
+
+```
 text,label
 http://secure-paypa1.com/verify,1
 https://www.microsoft.com,0
-Email body: Dear user, …,1
+Email body: Dear user verify your account,1
 ```
 
-*Label 0 = legitimate — Label 1 = phishing.*
+Label meaning
 
-### 5.  Run the Training Script
-
-```bash
-python train_model.py 
+```
+0 = Legitimate
+1 = Phishing
 ```
 
-What happens:
+---
 
-1. Tokeniser = `bert-base-uncased` (can change with `--pretrained`).
-2. URLs/e-mails are truncated/padded to 128 tokens.
-3. Script prints loss/F1 every epoch and saves:
+# 🏋️ Train the Model
+
+Run the training script
+
+```
+python train_model.py
+```
+
+During training the script will
+
+- Load **bert-base-uncased**
+- Tokenize input text
+- Train the phishing classifier
+- Evaluate performance
+
+After training the model is saved in
 
 ```
 models/
-  ├─ config.json
-  ├─ pytorch_model.bin
-  └─ tokenizer/
+├── config.json
+├── pytorch_model.bin
+└── tokenizer/
 ```
 
+---
 
-### 6.  Launch the Flask Dev Server
+# 🌐 Run the Web Application
 
-```bash
+Start the Flask server
+
+```
 python app.py
-# Visit http://127.0.0.1:5000
 ```
 
-Paste any URL or e-mail text—your freshly-trained model now powers the prediction.
+Open in browser
 
+```
+http://127.0.0.1:5000
+```
 
+Paste a **URL or email text** and the system will predict whether it is phishing.
 
+---
 
-### 7.  Version Control Best Practice
+# 🔌 REST API Usage
 
-1. Add large checkpoints to `.gitignore`.
-2. If you want to share the model:
-    * push to Hugging Face Hub **or**
-    * store in an S3 bucket and write `scripts/download_model.sh`.
+Example request
 
-### 8.  Speed Tips for Future Retraining
+```
+POST /predict
+```
 
-| Need | Flag / Setting |
-| :-- | :-- |
-| Freeze BERT \& train only classifier | `--freeze-bert` |
-| Larger batch via gradient-accum | `--accum 4` |
-| Load balanced sampler | `--balance` |
-| Calibrate probabilities | pass `--calibrate` |
+Input JSON
 
-### One-Line Summary
+```
+{
+"text": "Verify your account immediately at http://secure-paypa1.com"
+}
+```
 
-**Clone → create venv → install deps → add CSV → `train_model.py` → update `MODEL_PATH` → `python app.py`.**
+Output
 
+```
+{
+"prediction": "phishing",
+"confidence": 0.97
+}
+```
 
+---
 
+# 📈 Model Performance
+
+Example evaluation metrics
+
+| Metric | Score |
+|------|------|
+| Accuracy | 94% |
+| Precision | 93% |
+| Recall | 92% |
+| F1 Score | 92% |
+
+*(Results may vary depending on dataset used.)*
+
+---
+
+# 🖥️ Demo
+
+### Web Interface
+
+Add screenshot here later
+
+```
+![Demo](images/demo.png)
+```
+
+---
+
+# 🔒 Cybersecurity Applications
+
+This system can be used in
+
+- Email security systems
+- Web filtering tools
+- Security Operations Centers (SOC)
+- Threat intelligence pipelines
+- Browser phishing protection
+
+---
+
+# ⚡ Training Optimization Tips
+
+| Need | Option |
+|-----|-----|
+| Freeze BERT layers | `--freeze-bert` |
+| Gradient accumulation | `--accum 4` |
+| Handle class imbalance | `--balance` |
+| Probability calibration | `--calibrate` |
+
+---
+
+# 📌 Future Improvements
+
+- Real-time browser phishing detection  
+- Chrome extension integration  
+- Large-scale phishing dataset training  
+- Docker deployment  
+- API authentication  
+
+---
+
+# 👨‍💻 Author
+
+**Suryagandhan**
+
+Cybersecurity Student | SOC Analyst Aspirant  
+
+[![LinkedIn](https://custom-icon-badges.demolab.com/badge/LinkedIn-0A66C2?logo=linkedin-white&logoColor=fff)](https://linkedin.com/in/suryagandhan)
+
+---
+
+# ⭐ Support
+
+If you found this project useful, consider **starring the repository**.
